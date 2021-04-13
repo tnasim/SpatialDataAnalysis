@@ -30,8 +30,10 @@ object HotzoneAnalysis {
     joinDf.createOrReplaceTempView("joinResult")
 
     // YOU NEED TO CHANGE THIS PART
+    val groupByResult = joinDf.groupBy("rectangle").count()
+    val finalResult = groupByResult.sort("rectangle").coalesce(1)
 
-    return joinDf // YOU NEED TO CHANGE THIS PART
+    return finalResult
   }
 
 }
