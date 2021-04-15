@@ -48,4 +48,47 @@ object HotcellUtils {
   }
 
   // YOU NEED TO CHANGE THIS PART
+
+  def numOfNeighbours(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int, X: Int, Y: Int, Z: Int): Int =
+  {
+    var count_edge = 0;
+
+    if (X == minX || X == maxX)
+      count_edge += 1;
+
+    if (Y == minY || Y == maxY)
+      count_edge += 1;
+
+    if (Z == minZ || Z == maxZ)
+      count_edge += 1
+
+    
+    if (count_edge == 1) // edge on one side
+      return 17
+    else if (count_edge == 2) // edge on 2 sides
+      return 11
+    else if (count_edge == 3) // edge on 3 sides
+      return 7
+
+    // not on the edge of the cube
+    return 26
+  }
+
+  def calculateGScore(numCells: Int, x: Int, y: Int, z: Int, W: Int, W_Square: Int, sum_WX: Int , avg: Double, stdDev: Double): Double = {
+    var dW: Double = W.toDouble
+    var N: Double = numCells.toDouble
+    (
+      (sum_WX.toDouble - (avg * dW))
+        /
+      (
+        stdDev *
+          math.sqrt
+          (
+            (( N * W_Square ) - (dW * dW))
+              /
+            (N - 1.0)
+          )
+      )
+    )
+  }
 }
