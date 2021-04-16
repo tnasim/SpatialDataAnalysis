@@ -69,12 +69,23 @@ object HotcellAnalysis {
 
     spark.udf.register("CountNeighbor", (minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int, inputX: Int, inputY: Int, inputZ: Int)
         => ((HotcellUtils.numOfNeighbours(minX, minY, minZ, maxX, maxY, maxZ, inputX, inputY, inputZ))))
+//    val dfAdjacentHotcell = spark.sql(
+//      "SELECT CountNeighbor("+minX + "," + minY + "," + minZ + "," + maxX + "," + maxY + "," + maxZ + "," + "C1.x,C1.y,C1.z) as W, "
+//        + "count(*) as countall, "
+//        + "C1.x as x,C1.y as y,C1.z as z, "
+//        + "sum(C2.points_in_cell) as sum_WX "
+//        + "FROM Cells AS C1, Cells AS C2 "
+//        + "WHERE (C2.y = C1.y+1 OR C2.y = C1.y OR C2.y = C1.y-1) "
+//        +   "AND (C2.x = C1.x+1 OR C2.x = C1.x OR C2.x = C1.x-1) "
+//        +   "AND (C2.z = C1.z+1 OR C2.z = C1.z OR C2.z = C1.z-1) "
+//        + "GROUP BY C1.z, C1.y, C1.x "
+//        + "ORDER BY C1.z, C1.y, C1.x"
+//    )
+
     val dfAdjacentHotcell = spark.sql(
-      "SELECT CountNeighbor("+minX + "," + minY + "," + minZ + "," + maxX + "," + maxY + "," + maxZ + "," + "C1.x,C1.y,C1.z) as W, "
-        + "pow(CountNeighbor("+minX + "," + minY + "," + minZ + "," + maxX + "," + maxY + "," + maxZ + "," + "C1.x,C1.y,C1.z), 2) as W_Square, "
-        + "count(*) as countall, "
+      "SELECT count(*) as W, "
         + "C1.x as x,C1.y as y,C1.z as z, "
-        + "sum(C2.points_in_cell * CountNeighbor("+minX + "," + minY + "," + minZ + "," + maxX + "," + maxY + "," + maxZ + "," + "C1.x,C1.y,C1.z)) as sum_WX "
+        + "sum(C2.points_in_cell) as sum_WX "
         + "FROM Cells AS C1, Cells AS C2 "
         + "WHERE (C2.y = C1.y+1 OR C2.y = C1.y OR C2.y = C1.y-1) "
         +   "AND (C2.x = C1.x+1 OR C2.x = C1.x OR C2.x = C1.x-1) "
@@ -85,8 +96,8 @@ object HotcellAnalysis {
 
     // Define function for G-score calculation
     val fnCalculateGScore = udf(
-      (numCells: Int , x: Int, y: Int, z: Int, W: Int, W_Square: Int, sum_WX: Int, avg: Double, stdDev: Double)
-        => HotcellUtils.calculateGScore(numCells, x, y, z, W, W_Square, sum_WX, avg, stdDev)
+      (numCells: Int , x: Int, y: Int, z: Int, W: Int, sum_WX: Int, avg: Double, stdDev: Double)
+        => HotcellUtils.calculateGScore(numCells, x, y, z, W, sum_WX, avg, stdDev)
     )
 
     val dfWithGScore = dfAdjacentHotcell.withColumn(
@@ -94,7 +105,7 @@ object HotcellAnalysis {
         fnCalculateGScore(
           lit(numCells),
           col("x"), col("y"), col("z"),
-          col("W"), col("W_Square"),  col("sum_WX"),
+          col("W"), col("sum_WX"),
           lit(avg), lit(stdDev)
         )
     ).orderBy(desc("GScore")).limit(50)

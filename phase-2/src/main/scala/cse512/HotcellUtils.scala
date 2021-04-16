@@ -74,7 +74,7 @@ object HotcellUtils {
     return 26
   }
 
-  def calculateGScore(numCells: Int, x: Int, y: Int, z: Int, W: Int, W_Square: Int, sum_WX: Int , avg: Double, stdDev: Double): Double = {
+  def calculateGScore(numCells: Int, x: Int, y: Int, z: Int, W: Int, sum_WX: Int, avg: Double, stdDev: Double): Double = {
     var dW: Double = W.toDouble
     var N: Double = numCells.toDouble
     (
@@ -84,7 +84,7 @@ object HotcellUtils {
         stdDev *
           math.sqrt
           (
-            (( N * W_Square ) - (dW * dW))
+            (( N * dW ) - (dW * dW))
               /
             (N - 1.0)
           )
