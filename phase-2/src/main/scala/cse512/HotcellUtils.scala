@@ -3,6 +3,7 @@ package cse512
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import scala.math.sqrt
 
 object HotcellUtils {
   val coordinateStep = 0.01
@@ -47,5 +48,23 @@ object HotcellUtils {
     return calendar.get(Calendar.DAY_OF_MONTH)
   }
 
-  // YOU NEED TO CHANGE THIS PART
+  ////
+  // CHANGED PART
+  ////
+
+  def score(x: Int, y: Int, z: Int, minX: Double, maxX: Double, minY: Double, maxY: Double, minZ: Double, maxZ: Double, n: Double, sum: Double, neighbors: Int, mean: Double, stdDev: Double): Double = {
+    var zScore = 0.0
+
+    var neigh = 0
+    neigh = neighbors
+
+    val numerator = sum - neigh * mean
+    val denominator = stdDev * sqrt((neigh * n - neigh*neigh)/ (n - 1.0))
+
+    if (denominator != 0) {
+      zScore = numerator.toDouble / denominator
+    }
+
+    zScore
+  }
 }
