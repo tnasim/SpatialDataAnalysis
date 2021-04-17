@@ -61,7 +61,7 @@ def runHotcellAnalysis(spark: SparkSession, pointPath: String): DataFrame =
   var S = Math.sqrt((sum_x_pow_2/numCells*1.0) - X*X)
 
   spark.udf.register("g_score", (sum_x: Double, W: Double) =>HotcellUtils.g_score(sum_x, W, X , S, numCells))
-  val top_50_gscore = spark.sql("SELECT x, y, z,score from (SELECT x, y, z, g_score(Neighbor.sum_x, Neighbor.W) as score FROM Neighbor ORDER BY score DESC limit 50)")
+  val top_50_gscore = spark.sql("SELECT x, y, z,score from (SELECT x, y, z, g_score(sum_x, W) as score FROM Neighbor ORDER BY score DESC limit 50)")
   top_50_gscore.show()
 
   return top_50_gscore
