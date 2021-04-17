@@ -3,7 +3,6 @@ package cse512
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import scala.math.sqrt
 
 object HotcellUtils {
   val coordinateStep = 0.01
@@ -52,16 +51,11 @@ object HotcellUtils {
     if (Math.abs(Cell1X - Cell2X) <= 1 && Math.abs(Cell1Y - Cell2Y) <= 1 && Math.abs(Cell1Z - Cell2Z) <= 1) true else false
   }
 
-
-  def g_score(n: Double, sum: Double, neighbors: Int, mean: Double, stdDev: Double): Double = {
-    var result = 0.0
-    val numerator = (sum - neighbors * mean)*1.0
-    val denominator = stdDev * sqrt((neighbors * n - neighbors*neighbors)/ (n - 1.0))
-
-    if (denominator != 0) {
-      result = numerator / denominator
-    }
-
-    return result
+  def g_score(sum_x: Double, W: Double, X: Double, S: Double,numCells: Double): Double = {
+    val val1 = (sum_x - W * X)*1.0
+    val val2 = Math.sqrt( (W*numCells - Math.pow(W,2)) / (numCells - 1.0))
+    
+    if (val2 != 0 && S != 0) return val1/(S*val2) 
+    else  return 0.0
   }
 }
