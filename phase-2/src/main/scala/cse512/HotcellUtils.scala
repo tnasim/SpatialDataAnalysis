@@ -48,23 +48,20 @@ object HotcellUtils {
     return calendar.get(Calendar.DAY_OF_MONTH)
   }
 
-  ////
-  // CHANGED PART
-  ////
+  def isNeighbour(Cell1X: Int, Cell1Y: Int, Cell1Z: Int, Cell2X: Int, Cell2Y: Int, Cell2Z: Int): Boolean = {
+    if (Math.abs(Cell1X - Cell2X) <= 1 && Math.abs(Cell1Y - Cell2Y) <= 1 && Math.abs(Cell1Z - Cell2Z) <= 1) true else false
+  }
 
-  def score(x: Int, y: Int, z: Int, minX: Double, maxX: Double, minY: Double, maxY: Double, minZ: Double, maxZ: Double, n: Double, sum: Double, neighbors: Int, mean: Double, stdDev: Double): Double = {
-    var zScore = 0.0
 
-    var neigh = 0
-    neigh = neighbors
-
-    val numerator = sum - neigh * mean
-    val denominator = stdDev * sqrt((neigh * n - neigh*neigh)/ (n - 1.0))
+  def g_score(n: Double, sum: Double, neighbors: Int, mean: Double, stdDev: Double): Double = {
+    var result = 0.0
+    val numerator = (sum - neighbors * mean)*1.0
+    val denominator = stdDev * sqrt((neighbors * n - neighbors*neighbors)/ (n - 1.0))
 
     if (denominator != 0) {
-      zScore = numerator.toDouble / denominator
+      result = numerator / denominator
     }
 
-    zScore
+    return result
   }
 }
