@@ -53,7 +53,7 @@ def runHotcellAnalysis(spark: SparkSession, pointPath: String): DataFrame =
   spark.udf.register("isNeighbour", (Cell1X: Int, Cell1Y: Int, Cell1Z: Int, Cell2X: Int, Cell2Y: Int, Cell2Z: Int) => HotcellUtils.isNeighbour(Cell1X, Cell1Y, Cell1Z, Cell2X, Cell2Y, Cell2Z))
   val neighbor = spark.sql("SELECT C1.x, C1.y, C1.z, SUM(C2.xCount) as sum_x, COUNT(C2.xCount) as W FROM Cells C1, Cells C2 WHERE isNeighbour(C1.x,C1.y,C1.z,C2.x,C2.y,C2.z) GROUP BY C1.x, C1.y, C1.z ")
   neighbor.createOrReplaceTempView("Neighbor")
-  neighbor.show()
+  //neighbor.show()
 
   val sum_x = spark.sql("SELECT SUM(Cells.xCount) FROM Cells").first().getLong(0).toDouble
   var X = sum_x/(numCells*1.0)
@@ -61,8 +61,8 @@ def runHotcellAnalysis(spark: SparkSession, pointPath: String): DataFrame =
   var S = Math.sqrt((sum_x_pow_2/numCells*1.0) - X*X)
 
   spark.udf.register("g_score", (sum_x: Double, W: Double) =>HotcellUtils.g_score(sum_x, W, X , S, numCells))
-  val top_50_gscore = spark.sql("SELECT x, y, z,score from (SELECT x, y, z, g_score(sum_x, W) as score FROM Neighbor ORDER BY score DESC limit 50)")
-  top_50_gscore.show()
+  val top_50_gscore = spark.sql("SELECT x, y, z from (SELECT x, y, z, g_score(sum_x, W) as score FROM Neighbor ORDER BY score DESC limit 50)")
+  //top_50_gscore.show()
 
   return top_50_gscore
   
