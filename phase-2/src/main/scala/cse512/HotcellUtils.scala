@@ -47,5 +47,15 @@ object HotcellUtils {
     return calendar.get(Calendar.DAY_OF_MONTH)
   }
 
-  // YOU NEED TO CHANGE THIS PART
+  def isNeighbour(Cell1X: Int, Cell1Y: Int, Cell1Z: Int, Cell2X: Int, Cell2Y: Int, Cell2Z: Int): Boolean = {
+    if (Math.abs(Cell1X - Cell2X) <= 1 && Math.abs(Cell1Y - Cell2Y) <= 1 && Math.abs(Cell1Z - Cell2Z) <= 1) true else false
+  }
+
+  def g_score(sum_x: Double, W: Double, X: Double, S: Double,numCells: Double): Double = {
+    val val1 = (sum_x - W * X)*1.0
+    val val2 = Math.sqrt( (W*numCells - Math.pow(W,2)) / (numCells - 1.0))
+    
+    if (val2 != 0 && S != 0) return val1/(S*val2) 
+    else  return 0.0
+  }
 }
