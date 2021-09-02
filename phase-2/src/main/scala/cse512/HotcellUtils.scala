@@ -47,15 +47,46 @@ object HotcellUtils {
     return calendar.get(Calendar.DAY_OF_MONTH)
   }
 
-  def isNeighbour(Cell1X: Int, Cell1Y: Int, Cell1Z: Int, Cell2X: Int, Cell2Y: Int, Cell2Z: Int): Boolean = {
-    if (Math.abs(Cell1X - Cell2X) <= 1 && Math.abs(Cell1Y - Cell2Y) <= 1 && Math.abs(Cell1Z - Cell2Z) <= 1) true else false
+  def numOfNeighbours(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int, X: Int, Y: Int, Z: Int): Int =
+  {
+    var count_edge = 0;
+
+    if (X == minX || X == maxX)
+      count_edge += 1;
+
+    if (Y == minY || Y == maxY)
+      count_edge += 1;
+
+    if (Z == minZ || Z == maxZ)
+      count_edge += 1
+
+    
+    if (count_edge == 1) // edge on one side
+      return 17
+    else if (count_edge == 2) // edge on 2 sides
+      return 11
+    else if (count_edge == 3) // edge on 3 sides
+      return 7
+
+    // not on the edge of the cube
+    return 26
   }
 
-  def g_score(sum_x: Double, W: Double, X: Double, S: Double,numCells: Double): Double = {
-    val val1 = (sum_x - W * X)*1.0
-    val val2 = Math.sqrt( (W*numCells - Math.pow(W,2)) / (numCells - 1.0))
-    
-    if (val2 != 0 && S != 0) return val1/(S*val2) 
-    else  return 0.0
+  def calculateGScore(numCells: Int, x: Int, y: Int, z: Int, W: Int, sum_WX: Int, avg: Double, stdDev: Double): Double = {
+    var dW: Double = W.toDouble
+    var N: Double = numCells.toDouble
+    (
+      (sum_WX.toDouble - (avg * dW))
+        /
+      (
+        stdDev *
+          math.sqrt
+          (
+            (( N * dW ) - (dW * dW))
+              /
+            (N - 1.0)
+          )
+      )
+    )
   }
 }

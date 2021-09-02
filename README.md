@@ -67,6 +67,8 @@ The isNeighbour function takes as input the coordinates of 2 cells and returns t
 - [2] ACM SIGSPATIAL GISCUP 2016. Problem statement, http://sigspatial2016.sigspatial.org/giscup2016/problem
 - [3] Winutils For windows, https://github.com/cdarlint/winutils
 
+--- 
+
 ### Authors
 
 This project is a part of the project done for CSE 511: Data Processing at Scale Project Spring 2021, at Arizona State University.
@@ -78,9 +80,3 @@ Group 20 Team members:
 - Yashaswi Pochampally
 - Chandraveer Singh
 - Tariq M Nasim
-
-## phase-1
- - Implement ST_Contains and ST_Within
-
-## phase-2
- - HotSpot analysis
